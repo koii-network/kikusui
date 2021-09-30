@@ -1,4 +1,4 @@
-{
+module.exports = {
     "arrowParens": "avoid",
     "bracketSpacing": true,
     "endOfLine": "lf",
@@ -15,4 +15,4 @@
     "jsxBracketSameLine": false,
     "proseWrap": "preserve",
     "requirePragma": false
-  }
+  };

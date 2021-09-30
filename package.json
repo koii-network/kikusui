@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./build.sh"
+    "build": "./build.sh",
+    "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -30,10 +32,21 @@
   },
   "homepage": "https://github.com/koii-network/Finnie-Wallet-Provider#readme",
   "dependencies": {
+    "@typescript-eslint/parser": "^4.32.0",
     "browserify": "^17.0.0",
     "cypress": "^8.5.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.4.1",
     "typescript": "^4.4.3"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix"
   }
 }
