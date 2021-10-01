@@ -5,5 +5,9 @@
 import { checkForFinnie } from "./checkForFinnie";
 import { connectToFinnie } from "./connectToFinnie";
 
-export default { checkForFinnie, connectToFinnie };
+const finnie = {
+  checkForFinnie,
+  connectToFinnie,
+};
+export default finnie;
 // let extensionObj = await poll(() => window.koiiWallet, 5000, 200);
