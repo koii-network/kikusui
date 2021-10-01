@@ -1,14 +1,15 @@
 {
-  "name": "kikusui",
+  "name": "@koii-network/kikusui",
   "version": "1.0.0",
   "description": "A wrapper utility for the finnie wallet.",
   "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./build.sh",
+    "build": "tsc",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepack": "yarn build"
   },
   "repository": {
     "type": "git",
@@ -33,8 +34,7 @@
   "homepage": "https://github.com/koii-network/Finnie-Wallet-Provider#readme",
   "dependencies": {
     "@typescript-eslint/parser": "^4.32.0",
-    "browserify": "^17.0.0",
-    "cypress": "^8.5.0"
+    "browserify": "^17.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.32.0",
