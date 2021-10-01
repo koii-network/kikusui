@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run lint",
     "build": "tsc",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
     "prepare": "husky install",
