@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "module": "esnext",
     "target": "es6",
     "lib": ["es6", "dom"],
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": [
+    "./node_modules/",
+    "./dist/"
+  ],
+  "allowSyntheticDefaultImports": true
 }
