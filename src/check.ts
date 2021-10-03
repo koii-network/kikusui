@@ -10,7 +10,7 @@ declare global {
  * @returns {Promise}
  */
 
-export const checkForFinnie = (fn = () => window.koiiWallet) => {
+export const check = (fn = () => window.koiiWallet) => {
   const interval = 200;
   const endTime = Number(new Date()) + 5000;
 

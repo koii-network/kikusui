@@ -1,10 +1,12 @@
-import { checkForFinnie } from "./checkForFinnie";
+import { check } from "./check";
+
 interface Provider {
   connect?(): Promise<any>;
   getAddress?(): Promise<any>;
 }
-export const connectToFinnie = async () => {
-  const provider: Provider = await checkForFinnie();
+
+export const connect = async () => {
+  const provider: Provider = await check();
 
   const isConnected = await provider.connect();
 
