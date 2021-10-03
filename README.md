@@ -42,7 +42,7 @@ import finnie from "@koii-network/kikusui/src/index"
 
 // After importing, run the following to check to see that the user has installed finnie
 
-const provider = finnie.checkForFinnie()
+const provider = finnie.check()
 ```
 
 
@@ -53,7 +53,7 @@ const provider = finnie.checkForFinnie()
 * A successful connection to finnie will return a response with a user's address
 
 ```js
-const address = finnie.connectToFinnie();
+const address = finnie.connect();
 ```
 
 

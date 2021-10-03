@@ -2,12 +2,12 @@
 // window.koiWallet.connect() => res == {data: "Connected."} || {data: error}
 // poll => if user has finnie
 
-import { checkForFinnie } from "./checkForFinnie";
-import { connectToFinnie } from "./connectToFinnie";
+import { check } from "./check";
+import { connect } from "./connect";
 
 const finnie = {
-  checkForFinnie,
-  connectToFinnie,
+  check,
+  connect,
 };
 export default finnie;
 // let extensionObj = await poll(() => window.koiiWallet, 5000, 200);
