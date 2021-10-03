@@ -34,10 +34,12 @@
   "homepage": "https://github.com/koii-network/Finnie-Wallet-Provider#readme",
   "dependencies": {
     "@typescript-eslint/parser": "^4.32.0",
-    "browserify": "^17.0.0"
+    "browserify": "^17.0.0",
+    "chai-as-promised": "^7.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.22",
+    "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "chai": "^4.3.4",
