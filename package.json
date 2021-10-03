@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "npm run lint",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "build": "tsc",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
     "prepare": "husky install",
@@ -37,13 +37,18 @@
     "browserify": "^17.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": ">=6",
     "lint-staged": ">=10",
+    "mocha": "^9.1.2",
     "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
   },
   "lint-staged": {
