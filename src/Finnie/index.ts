@@ -36,7 +36,7 @@ export default class Finnie {
    */
   async init(): Promise<void> {
     this.setAvailable();
-    if (this.#isAvailable) {
+    if (this.availability) {
       const isConnected = await window.koiiWallet.getPermissions();
 
       isConnected.status === 200 && isConnected.data.length
