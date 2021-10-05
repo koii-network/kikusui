@@ -38,11 +38,14 @@
 
 * Import the following: 
 ```js
-import finnie from "@koii-network/kikusui/src/index"
+import Finnie from "@koii-network/kikusui/src/index"
 
-// After importing, run the following to check to see that the user has installed finnie
+// After importing, run the init method to check to see that the user has installed finnie
 
-const provider = finnie.check()
+const finnie = new Finnie();
+finnie.init();
+// If the finnie extension is detected you can tell if a user has already been connected by checking if finnie hasPermissions(boolean)
+finnie.hasPermissions
 ```
 
 
@@ -50,12 +53,25 @@ const provider = finnie.check()
 
 * You should only initiate user connection per user request (e.g. button click). Do not initiate on page load.
 
-* A successful connection to finnie will return a response with a user's address
+* A successful connection to finnie will update Finnie's address property with current user's address
 
 ```js
-const address = finnie.connect();
+finnie.connect();
+const address = finnie.userAddress;
 ```
 
+#### Send a Koii Tip
+
+```js
+// You can transfer Koii to another wallet with an amount(integer) and a target address(string)
+finnie.sendTip(address, amount);
+```
+
+#### Disconnect
+
+```js
+finnie.disconnect();
+```
 
 
 

@@ -1,15 +1,10 @@
-interface Provider {
-  connect?(): Promise<any>;
-  getAddress?(): Promise<any>;
-}
-
 declare global {
   interface Window {
     koiiWallet?: any;
   }
 }
 
-export class Finnie {
+export default class Finnie {
   #isAvailable: boolean;
   hasPermissions: boolean;
   userAddress: string;
@@ -32,7 +27,9 @@ export class Finnie {
   }
 
   set updatePermissions(hasPermissions) {
-    hasPermissions ? (this.hasPermissions = true) : (this.hasPermissions = false);
+    hasPermissions
+      ? (this.hasPermissions = true) && this.getAddress()
+      : (this.hasPermissions = false);
   }
   /**
    * Checks to see if the extension is available
@@ -44,6 +41,11 @@ export class Finnie {
     isConnected.status === 200 && isConnected.data.length
       ? this.updatePermissions(true)
       : this.updatePermissions(false);
+    if (!this.#isAvailable)
+      window.open(
+        "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
+        "_blank"
+      );
   }
   /**
    * Checks to see if a wallet has already been connected, if so updates the wallet's address
@@ -51,9 +53,14 @@ export class Finnie {
    */
   async connect(): Promise<void> {
     if (this.hasPermissions) {
-      const address = await window.koiiWallet.getAddress().then(res => res.data);
-      this.userAddress = address;
+      this.getAddress();
     } else window.koiiWallet.connect();
+  }
+
+  private async getAddress(): Promise<void> {
+    const address = await window.koiiWallet.getAddress().then(res => res.data);
+    this.userAddress = address;
+    return address;
   }
 
   async disconnect(): Promise<string> {
@@ -98,8 +105,6 @@ export class Finnie {
     return false;
   }
 }
-
-const instance = new Finnie();
 
 // instance.getAvailability;
 
