@@ -1,15 +1,16 @@
 {
   "name": "@koii-network/kikusui",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A wrapper utility for the finnie wallet.",
-  "main": "./src/Finnie/index.ts",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
     "build": "tsc --build",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
     "prepare": "husky install",
-    "prepack": "yarn build"
+    "prepack": "yarn build",
+    "prepublishOnly": "tsc && rollup -c"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,8 @@
   "dependencies": {
     "@typescript-eslint/parser": "^4.32.0",
     "browserify": "^17.0.0",
-    "chai-as-promised": "^7.1.1"
+    "chai-as-promised": "^7.1.1",
+    "rollup-plugin-dts": "^4.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.22",
@@ -50,6 +52,7 @@
     "lint-staged": ">=10",
     "mocha": "^9.1.2",
     "prettier": "^2.4.1",
+    "rollup": "^2.58.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
   },
