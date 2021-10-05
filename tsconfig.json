@@ -2,10 +2,8 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es6",
-    "lib": ["es2016", "DOM"],
-    "declaration": true,
-    "outDir": "dist"
-  }, 
+    "lib": ["es2016", "DOM"]
+  },
   "include": ["**/*.ts"],
   "exclude": ["./node_modules/", "./dist/"],
   "allowSyntheticDefaultImports": true

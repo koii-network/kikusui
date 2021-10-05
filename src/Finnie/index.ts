@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    koiiWallet?: any;
+  }
+}
+
 export default class Finnie {
   #isAvailable: boolean;
   hasPermissions: boolean;
