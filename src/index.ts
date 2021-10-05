@@ -1,7 +1,3 @@
-// getPermissions() => if user is connected will return an arr of strings || empty arr
-// window.koiWallet.connect() => res == {data: "Connected."} || {data: error}
-// poll => if user has finnie
-
 import { check } from "./check";
 import { connect } from "./connect";
 
@@ -11,3 +7,13 @@ const finnie = {
 };
 export default finnie;
 // let extensionObj = await poll(() => window.koiiWallet, 5000, 200);
+
+// To do:
+
+// Create the Finnie Class
+
+// Properly build our npm package
+
+// Exporting Objects (Classes)
+// Each Class would represent an item we are wrapping
+// Importing that Class would require an instantiation
