@@ -36,12 +36,13 @@ export default class Finnie {
    */
   async init(): Promise<void> {
     this.setAvailable();
-    const isConnected = await window.koiiWallet.getPermissions();
+    if (this.#isAvailable) {
+      const isConnected = await window.koiiWallet.getPermissions();
 
-    isConnected.status === 200 && isConnected.data.length
-      ? this.updatePermissions(true)
-      : this.updatePermissions(false);
-    if (!this.#isAvailable)
+      isConnected.status === 200 && isConnected.data.length
+        ? this.updatePermissions(true)
+        : this.updatePermissions(false);
+    } else
       window.open(
         "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
         "_blank"
