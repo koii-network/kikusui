@@ -1,9 +1,8 @@
 {
   "name": "@koii-network/kikusui",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A wrapper utility for the finnie wallet.",
   "main": "./src/Finnie/index.ts",
-  "type": "module",
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
