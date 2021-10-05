@@ -48,11 +48,13 @@ export default class Finnie {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             this.setAvailable();
-            const isConnected = yield window.koiiWallet.getPermissions();
-            isConnected.status === 200 && isConnected.data.length
-                ? this.updatePermissions(true)
-                : this.updatePermissions(false);
-            if (!__classPrivateFieldGet(this, _Finnie_isAvailable, "f"))
+            if (this.availability) {
+                const isConnected = yield window.koiiWallet.getPermissions();
+                isConnected.status === 200 && isConnected.data.length
+                    ? this.updatePermissions(true)
+                    : this.updatePermissions(false);
+            }
+            else
                 window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
         });
     }
