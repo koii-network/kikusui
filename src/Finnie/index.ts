@@ -80,13 +80,11 @@ export default class Finnie {
 
     if (extensionPresent) {
       console.log("choo choo");
-      const permissions = await this.windowFinnie.getPermissions();
-      console.log(permissions);
-      if (permissions.status === 200) {
-        console.log("Already connected");
+      const permissions = this.windowFinnie.getPermissions();
+
+      if (permissions) {
         this.setConnected(true);
       } else {
-        console.log("Nope");
         this.setConnected(false);
       }
     }
