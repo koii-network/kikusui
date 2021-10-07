@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Finnie_isAvailable;
-class Finnie {
+export default class Finnie {
     constructor() {
         _Finnie_isAvailable.set(this, void 0);
         __classPrivateFieldSet(this, _Finnie_isAvailable, false, "f");
@@ -39,11 +39,11 @@ class Finnie {
     }
     updatePermissions(hasPermissions) {
         if (hasPermissions) {
-            (this.hasPermissions = true);
+            this.hasPermissions = true;
             this.getAddress();
         }
         else {
-            (this.hasPermissions = false);
+            this.hasPermissions = false;
         }
     }
     /**
@@ -139,7 +139,3 @@ _Finnie_isAvailable = new WeakMap();
 // Need an adress and amount
 //
 // Sign transaction & upload to arweave
-module.exports = {
-    Finnie: Finnie,
-};
-export {};
