@@ -44,7 +44,7 @@ export default class Finnie {
     });
   }
 
-  set updatePermissions(hasPermissions) {
+  updatePermissions(hasPermissions) {
     if (hasPermissions) {
       this.hasPermissions = true;
       this.getAddress();
