@@ -1,10 +1,12 @@
+export {};
+
 declare global {
   interface Window {
     koiiWallet?: any;
   }
 }
 
-export default class Finnie {
+class Finnie {
   #isAvailable: boolean;
   hasPermissions: boolean;
   userAddress: string;
@@ -26,7 +28,7 @@ export default class Finnie {
     });
   }
 
-  set updatePermissions(hasPermissions) {
+  updatePermissions(hasPermissions) {
     hasPermissions
       ? (this.hasPermissions = true) && this.getAddress()
       : (this.hasPermissions = false);
@@ -101,7 +103,7 @@ export default class Finnie {
   //  window.koiiWallet.connect()
   //  }
 
-  get availability(): boolean {
+  availability(): boolean {
     if (this.#isAvailable) return true;
     return false;
   }
@@ -117,3 +119,6 @@ export default class Finnie {
 // Need an adress and amount
 //
 // Sign transaction & upload to arweave
+module.exports = {
+  Finnie: Finnie,
+};

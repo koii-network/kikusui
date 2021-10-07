@@ -19,7 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Finnie_isAvailable;
-export default class Finnie {
+class Finnie {
     constructor() {
         _Finnie_isAvailable.set(this, void 0);
         __classPrivateFieldSet(this, _Finnie_isAvailable, false, "f");
@@ -37,7 +37,7 @@ export default class Finnie {
             __classPrivateFieldSet(this, _Finnie_isAvailable, true, "f");
         });
     }
-    set updatePermissions(hasPermissions) {
+    updatePermissions(hasPermissions) {
         hasPermissions
             ? (this.hasPermissions = true) && this.getAddress()
             : (this.hasPermissions = false);
@@ -121,7 +121,7 @@ export default class Finnie {
     // Finnie.connect() {
     //  window.koiiWallet.connect()
     //  }
-    get availability() {
+    availability() {
         if (__classPrivateFieldGet(this, _Finnie_isAvailable, "f"))
             return true;
         return false;
@@ -135,3 +135,7 @@ _Finnie_isAvailable = new WeakMap();
 // Need an adress and amount
 //
 // Sign transaction & upload to arweave
+module.exports = {
+    Finnie: Finnie,
+};
+export {};

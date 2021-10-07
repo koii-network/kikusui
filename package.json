@@ -1,6 +1,6 @@
 {
   "name": "@koii-network/kikusui",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A wrapper utility for the finnie wallet.",
   "main": "./src/Finnie/index.js",
   "scripts": {
@@ -38,9 +38,11 @@
     "chai-as-promised": "^7.1.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@types/chai": "^4.2.22",
     "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^9.0.0",
+    "@types/node": "^16.10.3",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
@@ -55,5 +57,10 @@
   },
   "lint-staged": {
     "*.ts": "eslint --cache --fix"
-  }
+  },
+  "plugins": [
+    ["@babel/plugin-transform-modules-commonjs", {
+      "allowTopLevelThis": true
+    }]
+  ]
 }
