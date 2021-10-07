@@ -82,6 +82,7 @@ export default class Finnie {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.windowFinnie.disconnect().then(res => {
+                    console.log(res);
                     if (res.status === 200) {
                         this.setConnected(false);
                         this.userAddress = "";

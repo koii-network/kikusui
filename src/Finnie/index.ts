@@ -89,6 +89,7 @@ export default class Finnie {
   async disconnect(): Promise<void> {
     try {
       await this.windowFinnie.disconnect().then(res => {
+        console.log(res);
         if (res.status === 200) {
           this.setConnected(false);
           this.userAddress = "";
