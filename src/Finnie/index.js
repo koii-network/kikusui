@@ -17,13 +17,14 @@ export default class Finnie {
     setExtension() {
         return __awaiter(this, void 0, void 0, function* () {
             const extension = yield this.checkForFinnie();
-            console.log(extension);
             if (extension) {
                 this.hasExtension = true;
                 this.windowFinnie = window.koiiWallet;
+                return true;
             }
             else if (!extension) {
                 window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
+                return false;
             }
         });
     }
@@ -59,8 +60,8 @@ export default class Finnie {
      */
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.setExtension();
-            if (this.windowFinnie !== null) {
+            const extensionPresent = yield this.setExtension();
+            if (extensionPresent) {
                 yield this.windowFinnie.getPermissions().then(res => {
                     res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
                 });
@@ -76,13 +77,13 @@ export default class Finnie {
             if (this.isConnected) {
                 this.getAddress();
             }
-            else if (this.windowFinnie !== null)
+            else if (this.windowFinnie !== {})
                 this.windowFinnie.connect();
         });
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.windowFinnie !== null) {
+            if (this.windowFinnie !== {}) {
                 return yield this.windowFinnie.getAddress().then(res => {
                     this.userAddress = res.data;
                     return res.data;
@@ -116,7 +117,7 @@ export default class Finnie {
      */
     sendTip(address, amount) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.windowFinnie !== null) {
+            if (this.windowFinnie !== {}) {
                 try {
                     const tipStatus = yield this.windowFinnie.sendKoii(address, amount);
                     if (tipStatus)
