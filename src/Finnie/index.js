@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export default class Finnie {
     constructor() {
-        this.isAvailable = false;
+        this.hasExtension = false;
         this.windowFinnie = {};
-        this.hasPermissions = false;
+        this.isConnected = false;
         this.userAddress = "";
     }
     /**
@@ -21,24 +21,24 @@ export default class Finnie {
      */
     setAvailable() {
         if (window.koiiWallet) {
-            this.isAvailable = true;
+            this.hasExtension = true;
             this.windowFinnie = window.koiiWallet;
         }
         else {
-            this.isAvailable = false;
+            this.hasExtension = false;
         }
         window.addEventListener("finnieWalletLoaded", () => {
-            this.isAvailable = true;
+            this.hasExtension = true;
             this.windowFinnie = window.koiiWallet;
         });
     }
-    updatePermissions(hasPermissions) {
-        if (hasPermissions) {
-            this.hasPermissions = true;
+    set setConnected(isConnected) {
+        if (isConnected) {
+            this.isConnected = true;
             this.getAddress();
         }
         else {
-            this.hasPermissions = false;
+            this.isConnected = false;
         }
     }
     /**
@@ -47,11 +47,10 @@ export default class Finnie {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             this.setAvailable();
-            if (this.availability) {
-                const isConnected = yield this.windowFinnie.getPermissions();
-                isConnected.status === 200 && isConnected.data.length
-                    ? this.updatePermissions(true)
-                    : this.updatePermissions(false);
+            if (this.extensionFound) {
+                const isConnected = yield this.windowFinnie.getPermissions().then(res => {
+                    res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
+                });
             }
             else
                 window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
@@ -63,7 +62,7 @@ export default class Finnie {
      */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.hasPermissions) {
+            if (this.isConnected) {
                 this.getAddress();
             }
             else
@@ -72,9 +71,7 @@ export default class Finnie {
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            const address = yield this.windowFinnie.getAddress().then(res => res.data);
-            this.userAddress = address;
-            return address;
+            yield this.windowFinnie.getAddress().then(res => this.userAddress = res.data);
         });
     }
     disconnect() {
@@ -82,7 +79,7 @@ export default class Finnie {
             try {
                 const res = yield this.windowFinnie.disconnect();
                 if (res.status === 200) {
-                    this.updatePermissions(false);
+                    this.setConnected(false);
                     this.userAddress = "";
                     return "Succesfully disconnected.";
                 }
@@ -112,15 +109,8 @@ export default class Finnie {
             }
         });
     }
-    // import {Finnie} from 'kikusui'
-    // const FinnieWallet = new Finnie().init()
-    // Finnie.isLoaded ? do something
-    // Finnie.isConnected? Don't prompt user : Promp user to connect by calling Finnie.connect()
-    // Finnie.connect() {
-    //  window.koiiWallet.connect()
-    //  }
-    get availability() {
-        if (this.isAvailable)
+    get extensionFound() {
+        if (this.hasExtension)
             return true;
         return false;
     }
