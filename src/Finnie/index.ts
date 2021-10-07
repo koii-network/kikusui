@@ -82,17 +82,28 @@ export default class Finnie {
       console.log("choo choo");
       const permissions = await this.windowFinnie.getPermissions();
       console.log(permissions);
-      permissions.status === 200 ? this.setConnected(true) : this.setConnected(false);
+      if (permissions.status === 200) {
+        console.log("Already connected");
+        this.setConnected(true);
+      } else {
+        console.log("Nope");
+        this.setConnected(false);
+      }
     }
   }
   /**
    * Checks to see if a wallet has already been connected, if so updates the wallet's address
    * if not, attempts to connect
    */
-  async connect(): Promise<void> {
+  async connect(): Promise<boolean> {
     if (this.isConnected) {
-      await this.getAddress();
-    } else if (this.windowFinnie !== {}) await this.windowFinnie.connect();
+      const address = await this.getAddress();
+      return true;
+    } else if (this.windowFinnie !== {}) {
+      const isConnected = await this.windowFinnie.connect();
+      isConnected ? this.setConnected(true) : this.setConnected(false);
+      return false;
+    }
   }
 
   private async getAddress(): Promise<void> {
