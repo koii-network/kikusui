@@ -79,9 +79,7 @@ export default class Finnie {
   }
 
   private async getAddress(): Promise<void> {
-    const address = await this.windowFinnie.getAddress().then(res => res.data);
-    this.userAddress = address;
-    return address;
+    await this.windowFinnie.getAddress().then(res => (this.userAddress = res.data));
   }
 
   async disconnect(): Promise<string> {
