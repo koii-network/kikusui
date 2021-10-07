@@ -1,10 +1,12 @@
+export {};
+
 declare global {
   interface Window {
     koiiWallet?: any;
   }
 }
 
-export default class Finnie {
+class Finnie {
   #isAvailable: boolean;
   hasPermissions: boolean;
   userAddress: string;
@@ -117,3 +119,6 @@ export default class Finnie {
 // Need an adress and amount
 //
 // Sign transaction & upload to arweave
+module.exports = {
+  Finnie: Finnie,
+};
