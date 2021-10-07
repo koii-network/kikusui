@@ -7,24 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Finnie_isAvailable, _Finnie_windowFinnie;
 export default class Finnie {
     constructor() {
-        _Finnie_isAvailable.set(this, void 0);
-        _Finnie_windowFinnie.set(this, void 0);
-        __classPrivateFieldSet(this, _Finnie_isAvailable, false, "f");
-        __classPrivateFieldSet(this, _Finnie_windowFinnie, {}, "f");
+        this.isAvailable = false;
+        this.windowFinnie = {};
         this.hasPermissions = false;
         this.userAddress = "";
     }
@@ -35,14 +21,14 @@ export default class Finnie {
      */
     setAvailable() {
         if (window.koiiWallet) {
-            __classPrivateFieldSet(this, _Finnie_isAvailable, true, "f");
-            __classPrivateFieldSet(this, _Finnie_windowFinnie, window.koiiWallet, "f");
+            this.isAvailable = true;
+            this.windowFinnie = window.koiiWallet;
         }
         else {
-            __classPrivateFieldSet(this, _Finnie_isAvailable, false, "f");
+            this.isAvailable = false;
         }
         window.addEventListener("finnieWalletLoaded", () => {
-            __classPrivateFieldSet(this, _Finnie_isAvailable, true, "f");
+            this.isAvailable = true;
         });
     }
     updatePermissions(hasPermissions) {
@@ -61,7 +47,7 @@ export default class Finnie {
         return __awaiter(this, void 0, void 0, function* () {
             this.setAvailable();
             if (this.availability) {
-                const isConnected = yield __classPrivateFieldGet(this, _Finnie_windowFinnie, "f").getPermissions();
+                const isConnected = yield this.windowFinnie.getPermissions();
                 isConnected.status === 200 && isConnected.data.length
                     ? this.updatePermissions(true)
                     : this.updatePermissions(false);
@@ -80,12 +66,12 @@ export default class Finnie {
                 this.getAddress();
             }
             else
-                __classPrivateFieldGet(this, _Finnie_windowFinnie, "f").connect();
+                this.windowFinnie.connect();
         });
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            const address = yield __classPrivateFieldGet(this, _Finnie_windowFinnie, "f").getAddress().then(res => res.data);
+            const address = yield this.windowFinnie.getAddress().then(res => res.data);
             this.userAddress = address;
             return address;
         });
@@ -93,7 +79,7 @@ export default class Finnie {
     disconnect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const res = yield __classPrivateFieldGet(this, _Finnie_windowFinnie, "f").disconnect();
+                const res = yield this.windowFinnie.disconnect();
                 if (res.status === 200) {
                     this.updatePermissions(false);
                     this.userAddress = "";
@@ -115,7 +101,7 @@ export default class Finnie {
     sendTip(address, amount) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const tipStatus = yield __classPrivateFieldGet(this, _Finnie_windowFinnie, "f").sendKoii(address, amount);
+                const tipStatus = yield this.windowFinnie.sendKoii(address, amount);
                 if (tipStatus)
                     return tipStatus.data;
                 return tipStatus;
@@ -133,12 +119,11 @@ export default class Finnie {
     //  window.koiiWallet.connect()
     //  }
     get availability() {
-        if (__classPrivateFieldGet(this, _Finnie_isAvailable, "f"))
+        if (this.isAvailable)
             return true;
         return false;
     }
 }
-_Finnie_isAvailable = new WeakMap(), _Finnie_windowFinnie = new WeakMap();
 // instance.getAvailability;
 // Vote NSFW
 // Connecting(including getAddress) & Disconnection(init)
