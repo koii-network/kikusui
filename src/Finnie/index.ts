@@ -29,9 +29,12 @@ class Finnie {
   }
 
   updatePermissions(hasPermissions) {
-    hasPermissions
-      ? (this.hasPermissions = true) && this.getAddress()
-      : (this.hasPermissions = false);
+    if (hasPermissions) {
+      this.hasPermissions = true;
+      this.getAddress();
+    } else {
+      this.hasPermissions = false;
+    }
   }
   /**
    * Checks to see if the extension is available
