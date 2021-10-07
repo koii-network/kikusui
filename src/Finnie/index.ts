@@ -19,32 +19,53 @@ interface WindowFinnie {
 
 export default class Finnie {
   hasExtension: boolean;
-  windowFinnie: WindowFinnie | null;
+  windowFinnie: WindowFinnie;
   isConnected: boolean;
   userAddress: string;
   constructor() {
     this.hasExtension = false;
-    this.windowFinnie = this.setAvailable();
+    this.windowFinnie = {};
     this.isConnected = false;
     this.userAddress = "";
   }
 
-  setAvailable(): WindowFinnie | null {
-    if (window.koiiWallet) {
-      this.hasExtension = true;
-      console.log("set available happy conditional");
-      return window.koiiWallet;
-    } else {
-      console.log("set available sad conditional");
-      this.hasExtension = false;
-      return null;
-    }
+  async setAvailable(): Promise<WindowFinnie> {
+    // if (window.koiiWallet) {
+    //   this.hasExtension = true;
+    //   console.log("set available happy conditional")
+    //   return window.koiiWallet;
+    // } else {
+    //   console.log("set available sad conditional")
+    //   this.hasExtension = false;
+    //   return null;
+    // }
+    const extension = this.checkForFinnie();
+    console.log(extension);
+    return extension;
+    // if (res.status === 200) this.setConnected(true);
+    // window.addEventListener("finnieWalletLoaded", () => {
+    //   this.hasExtension = true;
+    //   console.log("event listener happy");
+    //   return window.koiiWallet;
+    // });
+  }
 
-    window.addEventListener("finnieWalletLoaded", () => {
-      this.hasExtension = true;
-      console.log("event listener happy");
-      return window.koiiWallet;
-    });
+  checkForFinnie(): Promise<any> {
+    const fn = () => window.koiiWallet;
+    const interval = 200;
+    const endTime = Number(new Date()) + 5000;
+
+    const checkCondition = (resolve, reject) => {
+      const result = fn();
+      if (result) {
+        resolve(result);
+      } else if (Number(new Date()) < endTime) {
+        setTimeout(checkCondition, interval, resolve, reject);
+      } else {
+        reject(new Error("timed out for " + fn));
+      }
+    };
+    return new Promise(checkCondition);
   }
 
   setConnected(isConnected) {
