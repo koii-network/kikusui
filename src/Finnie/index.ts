@@ -32,20 +32,24 @@ export default class Finnie {
   setAvailable(): WindowFinnie | null {
     if (window.koiiWallet) {
       this.hasExtension = true;
+      console.log("set available happy conditional");
       return window.koiiWallet;
     } else {
+      console.log("set available sad conditional");
       this.hasExtension = false;
       return null;
     }
 
     window.addEventListener("finnieWalletLoaded", () => {
       this.hasExtension = true;
-      this.windowFinnie = window.koiiWallet;
+      console.log("event listener happy");
+      return window.koiiWallet;
     });
   }
 
   setConnected(isConnected) {
     if (isConnected) {
+      console.log("set connected happy");
       this.isConnected = true;
       this.getAddress();
     } else {
@@ -57,32 +61,35 @@ export default class Finnie {
    */
   async init(): Promise<void> {
     this.setAvailable();
-    if (this.extensionFound) {
+    if (this.windowFinnie !== null) {
       await this.windowFinnie.getPermissions().then(res => {
         res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
       });
-    } else
+    } else {
+      this.setAvailable();
       window.open(
         "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
         "_blank"
       );
+    }
   }
   /**
    * Checks to see if a wallet has already been connected, if so updates the wallet's address
    * if not, attempts to connect
    */
   async connect(): Promise<void> {
-    let address;
     if (this.isConnected) {
       this.getAddress();
-    } else this.windowFinnie.connect();
+    } else if (this.windowFinnie !== null) this.windowFinnie.connect();
   }
 
   private async getAddress(): Promise<void> {
-    return await this.windowFinnie.getAddress().then(res => {
-      this.userAddress = res.data;
-      return res.data;
-    });
+    if (this.windowFinnie !== null) {
+      return await this.windowFinnie.getAddress().then(res => {
+        this.userAddress = res.data;
+        return res.data;
+      });
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -105,18 +112,20 @@ export default class Finnie {
    * @returns Promise with the result of transaction.
    */
   async sendTip(address: string, amount: number): Promise<any> {
-    try {
-      const tipStatus = await this.windowFinnie.sendKoii(address, amount);
-      if (tipStatus) return tipStatus.data;
-      return tipStatus;
-    } catch (error) {
-      throw new Error(error);
+    if (this.windowFinnie !== null) {
+      try {
+        const tipStatus = await this.windowFinnie.sendKoii(address, amount);
+        if (tipStatus) return tipStatus.data;
+        return tipStatus;
+      } catch (error) {
+        throw new Error(error);
+      }
     }
   }
 
   extensionFound(): boolean {
     if (this.hasExtension) return true;
-    return false;
+    else return false;
   }
 }
 

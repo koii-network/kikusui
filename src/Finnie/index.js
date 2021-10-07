@@ -17,19 +17,23 @@ export default class Finnie {
     setAvailable() {
         if (window.koiiWallet) {
             this.hasExtension = true;
+            console.log("set available happy conditional");
             return window.koiiWallet;
         }
         else {
+            console.log("set available sad conditional");
             this.hasExtension = false;
             return null;
         }
         window.addEventListener("finnieWalletLoaded", () => {
             this.hasExtension = true;
-            this.windowFinnie = window.koiiWallet;
+            console.log("event listener happy");
+            return window.koiiWallet;
         });
     }
     setConnected(isConnected) {
         if (isConnected) {
+            console.log("set connected happy");
             this.isConnected = true;
             this.getAddress();
         }
@@ -43,13 +47,15 @@ export default class Finnie {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             this.setAvailable();
-            if (this.extensionFound) {
+            if (this.windowFinnie !== null) {
                 yield this.windowFinnie.getPermissions().then(res => {
                     res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
                 });
             }
-            else
+            else {
+                this.setAvailable();
                 window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
+            }
         });
     }
     /**
@@ -58,20 +64,21 @@ export default class Finnie {
      */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            let address;
             if (this.isConnected) {
                 this.getAddress();
             }
-            else
+            else if (this.windowFinnie !== null)
                 this.windowFinnie.connect();
         });
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.windowFinnie.getAddress().then(res => {
-                this.userAddress = res.data;
-                return res.data;
-            });
+            if (this.windowFinnie !== null) {
+                return yield this.windowFinnie.getAddress().then(res => {
+                    this.userAddress = res.data;
+                    return res.data;
+                });
+            }
         });
     }
     disconnect() {
@@ -100,21 +107,24 @@ export default class Finnie {
      */
     sendTip(address, amount) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const tipStatus = yield this.windowFinnie.sendKoii(address, amount);
-                if (tipStatus)
-                    return tipStatus.data;
-                return tipStatus;
-            }
-            catch (error) {
-                throw new Error(error);
+            if (this.windowFinnie !== null) {
+                try {
+                    const tipStatus = yield this.windowFinnie.sendKoii(address, amount);
+                    if (tipStatus)
+                        return tipStatus.data;
+                    return tipStatus;
+                }
+                catch (error) {
+                    throw new Error(error);
+                }
             }
         });
     }
     extensionFound() {
         if (this.hasExtension)
             return true;
-        return false;
+        else
+            return false;
     }
 }
 // instance.getAvailability;
