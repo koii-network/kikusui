@@ -38,6 +38,7 @@
     "chai-as-promised": "^7.1.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@types/chai": "^4.2.22",
     "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^9.0.0",
@@ -56,5 +57,10 @@
   },
   "lint-staged": {
     "*.ts": "eslint --cache --fix"
-  }
+  },
+  "plugins": [
+    ["@babel/plugin-transform-modules-commonjs", {
+      "allowTopLevelThis": true
+    }]
+  ]
 }
