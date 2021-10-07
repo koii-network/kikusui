@@ -29,17 +29,18 @@ export default class Finnie {
     this.userAddress = "";
   }
 
-  async setExtension() {
+  async setExtension(): Promise<boolean> {
     const extension = await this.checkForFinnie();
-    console.log(extension);
     if (extension) {
       this.hasExtension = true;
       this.windowFinnie = window.koiiWallet;
+      return true;
     } else if (!extension) {
       window.open(
         "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
         "_blank"
       );
+      return false;
     }
   }
 
@@ -73,8 +74,8 @@ export default class Finnie {
    * Checks to see if the extension is available
    */
   async init(): Promise<void> {
-    this.setExtension();
-    if (this.windowFinnie !== null) {
+    const extensionPresent = await this.setExtension();
+    if (extensionPresent) {
       await this.windowFinnie.getPermissions().then(res => {
         res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
       });
@@ -87,11 +88,11 @@ export default class Finnie {
   async connect(): Promise<void> {
     if (this.isConnected) {
       this.getAddress();
-    } else if (this.windowFinnie !== null) this.windowFinnie.connect();
+    } else if (this.windowFinnie !== {}) this.windowFinnie.connect();
   }
 
   private async getAddress(): Promise<void> {
-    if (this.windowFinnie !== null) {
+    if (this.windowFinnie !== {}) {
       return await this.windowFinnie.getAddress().then(res => {
         this.userAddress = res.data;
         return res.data;
@@ -119,7 +120,7 @@ export default class Finnie {
    * @returns Promise with the result of transaction.
    */
   async sendTip(address: string, amount: number): Promise<any> {
-    if (this.windowFinnie !== null) {
+    if (this.windowFinnie !== {}) {
       try {
         const tipStatus = await this.windowFinnie.sendKoii(address, amount);
         if (tipStatus) return tipStatus.data;
