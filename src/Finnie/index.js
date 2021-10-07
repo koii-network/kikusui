@@ -10,26 +10,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class Finnie {
     constructor() {
         this.hasExtension = false;
-        this.windowFinnie = this.setAvailable();
+        this.windowFinnie = {};
         this.isConnected = false;
         this.userAddress = "";
     }
     setAvailable() {
-        if (window.koiiWallet) {
-            this.hasExtension = true;
-            console.log("set available happy conditional");
-            return window.koiiWallet;
-        }
-        else {
-            console.log("set available sad conditional");
-            this.hasExtension = false;
-            return null;
-        }
-        window.addEventListener("finnieWalletLoaded", () => {
-            this.hasExtension = true;
-            console.log("event listener happy");
-            return window.koiiWallet;
+        return __awaiter(this, void 0, void 0, function* () {
+            // if (window.koiiWallet) {
+            //   this.hasExtension = true;
+            //   console.log("set available happy conditional")
+            //   return window.koiiWallet;
+            // } else {
+            //   console.log("set available sad conditional")
+            //   this.hasExtension = false;
+            //   return null;
+            // }
+            const extension = this.checkForFinnie();
+            console.log(extension);
+            return extension;
+            // if (res.status === 200) this.setConnected(true);
+            // window.addEventListener("finnieWalletLoaded", () => {
+            //   this.hasExtension = true;
+            //   console.log("event listener happy");
+            //   return window.koiiWallet;
+            // });
         });
+    }
+    checkForFinnie() {
+        const fn = () => window.koiiWallet;
+        const interval = 200;
+        const endTime = Number(new Date()) + 5000;
+        const checkCondition = (resolve, reject) => {
+            const result = fn();
+            if (result) {
+                resolve(result);
+            }
+            else if (Number(new Date()) < endTime) {
+                setTimeout(checkCondition, interval, resolve, reject);
+            }
+            else {
+                reject(new Error("timed out for " + fn));
+            }
+        };
+        return new Promise(checkCondition);
     }
     setConnected(isConnected) {
         if (isConnected) {
