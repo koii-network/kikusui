@@ -2,7 +2,7 @@ export {};
 
 declare global {
   interface Window {
-    koiiWallet?: any;
+    koiiWallet?: WindowFinnie;
   }
 }
 
@@ -29,40 +29,32 @@ export default class Finnie {
     this.userAddress = "";
   }
 
-  async setAvailable(): Promise<WindowFinnie> {
-    // if (window.koiiWallet) {
-    //   this.hasExtension = true;
-    //   console.log("set available happy conditional")
-    //   return window.koiiWallet;
-    // } else {
-    //   console.log("set available sad conditional")
-    //   this.hasExtension = false;
-    //   return null;
-    // }
-    const extension = this.checkForFinnie();
+  async setExtension() {
+    const extension = await this.checkForFinnie();
     console.log(extension);
-    return extension;
-    // if (res.status === 200) this.setConnected(true);
-    // window.addEventListener("finnieWalletLoaded", () => {
-    //   this.hasExtension = true;
-    //   console.log("event listener happy");
-    //   return window.koiiWallet;
-    // });
+    if (extension) {
+      this.hasExtension = true;
+      this.windowFinnie = window.koiiWallet;
+    } else if (!extension) {
+      window.open(
+        "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
+        "_blank"
+      );
+    }
   }
 
   checkForFinnie(): Promise<any> {
-    const fn = () => window.koiiWallet;
-    const interval = 200;
-    const endTime = Number(new Date()) + 5000;
+    const extensionCall = () => window.koiiWallet;
+    const time = Number(new Date());
 
     const checkCondition = (resolve, reject) => {
-      const result = fn();
+      const result = extensionCall();
       if (result) {
         resolve(result);
-      } else if (Number(new Date()) < endTime) {
-        setTimeout(checkCondition, interval, resolve, reject);
+      } else if (time < time + 5000) {
+        setTimeout(checkCondition, 200, resolve, reject);
       } else {
-        reject(new Error("timed out for " + fn));
+        reject(new Error("timed out for " + extensionCall));
       }
     };
     return new Promise(checkCondition);
@@ -81,17 +73,11 @@ export default class Finnie {
    * Checks to see if the extension is available
    */
   async init(): Promise<void> {
-    this.setAvailable();
+    this.setExtension();
     if (this.windowFinnie !== null) {
       await this.windowFinnie.getPermissions().then(res => {
         res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
       });
-    } else {
-      this.setAvailable();
-      window.open(
-        "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
-        "_blank"
-      );
     }
   }
   /**
