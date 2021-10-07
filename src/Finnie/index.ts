@@ -8,10 +8,21 @@ declare global {
 
 export default class Finnie {
   #isAvailable: boolean;
+  #windowFinnie: {
+    getPermissions?(): Promise<any>;
+    connect?(): Promise<any>;
+    sendKoii?(address: string, amount: number): Promise<any>;
+    getAddress?(): Promise<any>;
+    disconnect?(): Promise<any>;
+    registerData?(): Promise<any>;
+    sign?(): Promise<any>;
+    signPort?(): any;
+  };
   hasPermissions: boolean;
   userAddress: string;
   constructor() {
     this.#isAvailable = false;
+    this.#windowFinnie = {};
     this.hasPermissions = false;
     this.userAddress = "";
   }
@@ -21,14 +32,19 @@ export default class Finnie {
    *    Sets blah blah blah
    */
   setAvailable(): void {
-    window.koiiWallet ? (this.#isAvailable = true) : (this.#isAvailable = false);
+    if (window.koiiWallet) {
+      this.#isAvailable = true;
+      this.#windowFinnie = window.koiiWallet;
+    } else {
+      this.#isAvailable = false;
+    }
 
     window.addEventListener("finnieWalletLoaded", () => {
       this.#isAvailable = true;
     });
   }
 
-  updatePermissions(hasPermissions) {
+  set updatePermissions(hasPermissions) {
     if (hasPermissions) {
       this.hasPermissions = true;
       this.getAddress();
@@ -42,7 +58,7 @@ export default class Finnie {
   async init(): Promise<void> {
     this.setAvailable();
     if (this.availability) {
-      const isConnected = await window.koiiWallet.getPermissions();
+      const isConnected = await this.#windowFinnie.getPermissions();
 
       isConnected.status === 200 && isConnected.data.length
         ? this.updatePermissions(true)
@@ -60,18 +76,18 @@ export default class Finnie {
   async connect(): Promise<void> {
     if (this.hasPermissions) {
       this.getAddress();
-    } else window.koiiWallet.connect();
+    } else this.#windowFinnie.connect();
   }
 
   private async getAddress(): Promise<void> {
-    const address = await window.koiiWallet.getAddress().then(res => res.data);
+    const address = await this.#windowFinnie.getAddress().then(res => res.data);
     this.userAddress = address;
     return address;
   }
 
   async disconnect(): Promise<string> {
     try {
-      const res = await window.koiiWallet.disconnect();
+      const res = await this.#windowFinnie.disconnect();
       if (res.status === 200) {
         this.updatePermissions(false);
         this.userAddress = "";
@@ -87,9 +103,8 @@ export default class Finnie {
    * @returns Promise with the result of transaction.
    */
   async sendTip(address: string, amount: number): Promise<any> {
-    const extension = window.koiiWallet;
     try {
-      const tipStatus = await extension.sendKoi(address, amount);
+      const tipStatus = await this.#windowFinnie.sendKoii(address, amount);
       if (tipStatus) return tipStatus.data;
       return tipStatus;
     } catch (error) {
@@ -106,7 +121,7 @@ export default class Finnie {
   //  window.koiiWallet.connect()
   //  }
 
-  availability(): boolean {
+  get availability(): boolean {
     if (this.#isAvailable) return true;
     return false;
   }
