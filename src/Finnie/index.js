@@ -39,14 +39,13 @@ export default class Finnie {
             __classPrivateFieldSet(this, _Finnie_windowFinnie, window.koiiWallet, "f");
         }
         else {
-            (__classPrivateFieldSet(this, _Finnie_isAvailable, false, "f"));
+            __classPrivateFieldSet(this, _Finnie_isAvailable, false, "f");
         }
-        ;
         window.addEventListener("finnieWalletLoaded", () => {
             __classPrivateFieldSet(this, _Finnie_isAvailable, true, "f");
         });
     }
-    set updatePermissions(hasPermissions) {
+    updatePermissions(hasPermissions) {
         if (hasPermissions) {
             this.hasPermissions = true;
             this.getAddress();
