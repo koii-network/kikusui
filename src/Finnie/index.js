@@ -37,7 +37,7 @@ class Finnie {
             __classPrivateFieldSet(this, _Finnie_isAvailable, true, "f");
         });
     }
-    set updatePermissions(hasPermissions) {
+    updatePermissions(hasPermissions) {
         hasPermissions
             ? (this.hasPermissions = true) && this.getAddress()
             : (this.hasPermissions = false);
@@ -121,7 +121,7 @@ class Finnie {
     // Finnie.connect() {
     //  window.koiiWallet.connect()
     //  }
-    get availability() {
+    availability() {
         if (__classPrivateFieldGet(this, _Finnie_isAvailable, "f"))
             return true;
         return false;
@@ -136,6 +136,6 @@ _Finnie_isAvailable = new WeakMap();
 //
 // Sign transaction & upload to arweave
 module.exports = {
-    Finnie: Finnie
+    Finnie: Finnie,
 };
 export {};
