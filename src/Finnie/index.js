@@ -32,7 +32,7 @@ export default class Finnie {
             this.windowFinnie = window.koiiWallet;
         });
     }
-    set setConnected(isConnected) {
+    setConnected(isConnected) {
         if (isConnected) {
             this.isConnected = true;
             this.getAddress();
@@ -62,6 +62,7 @@ export default class Finnie {
      */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
+            let address;
             if (this.isConnected) {
                 this.getAddress();
             }
@@ -71,20 +72,24 @@ export default class Finnie {
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.windowFinnie.getAddress().then(res => this.userAddress = res.data);
+            return yield this.windowFinnie.getAddress().then(res => {
+                this.userAddress = res.data;
+                return res.data;
+            });
         });
     }
     disconnect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const res = yield this.windowFinnie.disconnect();
-                if (res.status === 200) {
-                    this.setConnected(false);
-                    this.userAddress = "";
-                    return "Succesfully disconnected.";
-                }
-                else
-                    throw new Error("Not able to disconnect, no user is connected.");
+                yield this.windowFinnie.disconnect().then(res => {
+                    if (res.status === 200) {
+                        this.setConnected(false);
+                        this.userAddress = "";
+                        return "Succesfully disconnected.";
+                    }
+                    else
+                        throw new Error("Not able to disconnect, no user is connected.");
+                });
             }
             catch (error) {
                 throw new Error(error);
@@ -109,7 +114,7 @@ export default class Finnie {
             }
         });
     }
-    get extensionFound() {
+    extensionFound() {
         if (this.hasExtension)
             return true;
         return false;
