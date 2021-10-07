@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-class Finnie {
+export default class Finnie {
   #isAvailable: boolean;
   hasPermissions: boolean;
   userAddress: string;
@@ -122,6 +122,3 @@ class Finnie {
 // Need an adress and amount
 //
 // Sign transaction & upload to arweave
-module.exports = {
-  Finnie: Finnie,
-};
