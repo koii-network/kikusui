@@ -28,7 +28,7 @@ class Finnie {
     });
   }
 
-  set updatePermissions(hasPermissions) {
+  updatePermissions(hasPermissions) {
     hasPermissions
       ? (this.hasPermissions = true) && this.getAddress()
       : (this.hasPermissions = false);
@@ -103,7 +103,7 @@ class Finnie {
   //  window.koiiWallet.connect()
   //  }
 
-  get availability(): boolean {
+  availability(): boolean {
     if (this.#isAvailable) return true;
     return false;
   }
