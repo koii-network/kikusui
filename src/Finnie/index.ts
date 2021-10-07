@@ -45,7 +45,7 @@ export default class Finnie {
     });
   }
 
-  set setConnected(isConnected) {
+  setConnected(isConnected) {
     if (isConnected) {
       this.isConnected = true;
       this.getAddress();
@@ -73,23 +73,29 @@ export default class Finnie {
    * if not, attempts to connect
    */
   async connect(): Promise<void> {
+    let address;
     if (this.isConnected) {
       this.getAddress();
     } else this.windowFinnie.connect();
   }
 
   private async getAddress(): Promise<void> {
-    await this.windowFinnie.getAddress().then(res => (this.userAddress = res.data));
+    return await this.windowFinnie.getAddress().then(res => {
+      this.userAddress = res.data;
+      return res.data;
+    });
   }
 
-  async disconnect(): Promise<string> {
+  async disconnect(): Promise<void> {
     try {
-      const res = await this.windowFinnie.disconnect();
-      if (res.status === 200) {
-        this.setConnected(false);
-        this.userAddress = "";
-        return "Succesfully disconnected.";
-      } else throw new Error("Not able to disconnect, no user is connected.");
+      await this.windowFinnie.disconnect().then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          this.setConnected(false);
+          this.userAddress = "";
+          return "Succesfully disconnected.";
+        } else throw new Error("Not able to disconnect, no user is connected.");
+      });
     } catch (error) {
       throw new Error(error);
     }
@@ -109,7 +115,7 @@ export default class Finnie {
     }
   }
 
-  get extensionFound(): boolean {
+  extensionFound(): boolean {
     if (this.hasExtension) return true;
     return false;
   }
