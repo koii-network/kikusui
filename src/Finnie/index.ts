@@ -62,6 +62,8 @@ export default class Finnie {
   }
 
   setConnected(isConnected) {
+    console.log(isConnected);
+
     if (isConnected) {
       console.log("set connected happy");
       this.isConnected = true;
@@ -75,10 +77,12 @@ export default class Finnie {
    */
   async init(): Promise<void> {
     const extensionPresent = await this.setExtension();
+
     if (extensionPresent) {
-      await this.windowFinnie.getPermissions().then(res => {
-        res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
-      });
+      console.log("choo choo");
+      const permissions = await this.windowFinnie.getPermissions();
+      console.log(permissions);
+      permissions.status === 200 ? this.setConnected(true) : this.setConnected(false);
     }
   }
   /**
@@ -87,16 +91,14 @@ export default class Finnie {
    */
   async connect(): Promise<void> {
     if (this.isConnected) {
-      this.getAddress();
-    } else if (this.windowFinnie !== {}) this.windowFinnie.connect();
+      await this.getAddress();
+    } else if (this.windowFinnie !== {}) await this.windowFinnie.connect();
   }
 
   private async getAddress(): Promise<void> {
     if (this.windowFinnie !== {}) {
-      return await this.windowFinnie.getAddress().then(res => {
-        this.userAddress = res.data;
-        return res.data;
-      });
+      const address = await this.windowFinnie.getAddress();
+      this.userAddress = address.data;
     }
   }
 
