@@ -46,6 +46,7 @@ export default class Finnie {
         return new Promise(checkCondition);
     }
     setConnected(isConnected) {
+        console.log(isConnected);
         if (isConnected) {
             console.log("set connected happy");
             this.isConnected = true;
@@ -62,9 +63,10 @@ export default class Finnie {
         return __awaiter(this, void 0, void 0, function* () {
             const extensionPresent = yield this.setExtension();
             if (extensionPresent) {
-                yield this.windowFinnie.getPermissions().then(res => {
-                    res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
-                });
+                console.log("choo choo");
+                const permissions = yield this.windowFinnie.getPermissions();
+                console.log(permissions);
+                permissions.status === 200 ? this.setConnected(true) : this.setConnected(false);
             }
         });
     }
@@ -75,19 +77,17 @@ export default class Finnie {
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isConnected) {
-                this.getAddress();
+                yield this.getAddress();
             }
             else if (this.windowFinnie !== {})
-                this.windowFinnie.connect();
+                yield this.windowFinnie.connect();
         });
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.windowFinnie !== {}) {
-                return yield this.windowFinnie.getAddress().then(res => {
-                    this.userAddress = res.data;
-                    return res.data;
-                });
+                const address = yield this.windowFinnie.getAddress();
+                this.userAddress = address.data;
             }
         });
     }
