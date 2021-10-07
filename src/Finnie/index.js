@@ -66,7 +66,14 @@ export default class Finnie {
                 console.log("choo choo");
                 const permissions = yield this.windowFinnie.getPermissions();
                 console.log(permissions);
-                permissions.status === 200 ? this.setConnected(true) : this.setConnected(false);
+                if (permissions.status === 200) {
+                    console.log("Already connected");
+                    this.setConnected(true);
+                }
+                else {
+                    console.log("Nope");
+                    this.setConnected(false);
+                }
             }
         });
     }
@@ -77,10 +84,14 @@ export default class Finnie {
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isConnected) {
-                yield this.getAddress();
+                const address = yield this.getAddress();
+                return true;
             }
-            else if (this.windowFinnie !== {})
-                yield this.windowFinnie.connect();
+            else if (this.windowFinnie !== {}) {
+                const isConnected = yield this.windowFinnie.connect();
+                isConnected ? this.setConnected(true) : this.setConnected(false);
+                return false;
+            }
         });
     }
     getAddress() {
