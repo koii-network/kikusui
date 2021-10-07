@@ -29,6 +29,7 @@ export default class Finnie {
         }
         window.addEventListener("finnieWalletLoaded", () => {
             this.isAvailable = true;
+            this.windowFinnie = window.koiiWallet;
         });
     }
     updatePermissions(hasPermissions) {
