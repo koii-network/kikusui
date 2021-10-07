@@ -10,22 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class Finnie {
     constructor() {
         this.hasExtension = false;
-        this.windowFinnie = {};
+        this.windowFinnie = this.setAvailable();
         this.isConnected = false;
         this.userAddress = "";
     }
-    /**
-     * Initialises the Finnie Object
-     *   Checks for blah blah blah
-     *    Sets blah blah blah
-     */
     setAvailable() {
         if (window.koiiWallet) {
             this.hasExtension = true;
-            this.windowFinnie = window.koiiWallet;
+            return window.koiiWallet;
         }
         else {
             this.hasExtension = false;
+            return null;
         }
         window.addEventListener("finnieWalletLoaded", () => {
             this.hasExtension = true;
@@ -48,7 +44,7 @@ export default class Finnie {
         return __awaiter(this, void 0, void 0, function* () {
             this.setAvailable();
             if (this.extensionFound) {
-                const isConnected = yield this.windowFinnie.getPermissions().then(res => {
+                yield this.windowFinnie.getPermissions().then(res => {
                     res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
                 });
             }

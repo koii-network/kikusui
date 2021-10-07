@@ -6,37 +6,36 @@ declare global {
   }
 }
 
+interface WindowFinnie {
+  getPermissions?(): Promise<any>;
+  connect?(): Promise<any>;
+  sendKoii?(address: string, amount: number): Promise<any>;
+  getAddress?(): Promise<any>;
+  disconnect?(): Promise<any>;
+  registerData?(): Promise<any>;
+  sign?(): Promise<any>;
+  signPort?(): any;
+}
+
 export default class Finnie {
   hasExtension: boolean;
-  windowFinnie: {
-    getPermissions?(): Promise<any>;
-    connect?(): Promise<any>;
-    sendKoii?(address: string, amount: number): Promise<any>;
-    getAddress?(): Promise<any>;
-    disconnect?(): Promise<any>;
-    registerData?(): Promise<any>;
-    sign?(): Promise<any>;
-    signPort?(): any;
-  };
+  windowFinnie: WindowFinnie | null;
   isConnected: boolean;
   userAddress: string;
   constructor() {
     this.hasExtension = false;
-    this.windowFinnie = {};
+    this.windowFinnie = this.setAvailable();
     this.isConnected = false;
     this.userAddress = "";
   }
-  /**
-   * Initialises the Finnie Object
-   *   Checks for blah blah blah
-   *    Sets blah blah blah
-   */
-  setAvailable(): void {
+
+  setAvailable(): WindowFinnie | null {
     if (window.koiiWallet) {
       this.hasExtension = true;
-      this.windowFinnie = window.koiiWallet;
+      return window.koiiWallet;
     } else {
       this.hasExtension = false;
+      return null;
     }
 
     window.addEventListener("finnieWalletLoaded", () => {
@@ -59,7 +58,7 @@ export default class Finnie {
   async init(): Promise<void> {
     this.setAvailable();
     if (this.extensionFound) {
-      const isConnected = await this.windowFinnie.getPermissions().then(res => {
+      await this.windowFinnie.getPermissions().then(res => {
         res.status === 200 && res.data.length ? this.setConnected(true) : this.setConnected(false);
       });
     } else
