@@ -22,7 +22,7 @@ export default class Finnie {
                 this.windowFinnie = window.koiiWallet;
                 return true;
             }
-            else if (!extension) {
+            else {
                 window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
                 return false;
             }
@@ -30,25 +30,24 @@ export default class Finnie {
     }
     checkForFinnie() {
         const extensionCall = () => window.koiiWallet;
-        const time = Number(new Date());
+        let counter = 0;
         const checkCondition = (resolve, reject) => {
             const result = extensionCall();
             if (result) {
                 resolve(result);
             }
-            else if (time < time + 5000) {
+            else if (counter < 5) {
+                counter++;
                 setTimeout(checkCondition, 200, resolve, reject);
             }
             else {
-                reject(new Error("timed out for " + extensionCall));
+                resolve(false);
             }
         };
         return new Promise(checkCondition);
     }
     setConnected(isConnected) {
-        console.log(isConnected);
         if (isConnected) {
-            console.log("set connected happy");
             this.isConnected = true;
             this.getAddress();
         }
@@ -64,8 +63,8 @@ export default class Finnie {
             const extensionPresent = yield this.setExtension();
             if (extensionPresent) {
                 console.log("choo choo");
-                const permissions = this.windowFinnie.getPermissions();
-                if (permissions) {
+                const permissions = yield this.windowFinnie.getPermissions();
+                if (permissions.data.length) {
                     this.setConnected(true);
                 }
                 else {
@@ -81,10 +80,10 @@ export default class Finnie {
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isConnected) {
-                const address = yield this.getAddress();
+                this.getAddress();
                 return true;
             }
-            else if (this.windowFinnie !== {}) {
+            else {
                 const isConnected = yield this.windowFinnie.connect();
                 isConnected ? this.setConnected(true) : this.setConnected(false);
                 return false;
@@ -93,10 +92,8 @@ export default class Finnie {
     }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.windowFinnie !== {}) {
-                const address = yield this.windowFinnie.getAddress();
-                this.userAddress = address.data;
-            }
+            const address = this.windowFinnie.getAddress();
+            address ? (this.userAddress = address) : (this.userAddress = "");
         });
     }
     disconnect() {
