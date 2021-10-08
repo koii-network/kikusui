@@ -81,7 +81,7 @@ export default class Finnie {
 
     if (extensionPresent) {
       console.log("choo choo");
-      const permissions = this.windowFinnie.getPermissions();
+      const permissions = await this.windowFinnie.getPermissions();
 
       if (permissions.data.length) {
         this.setConnected(true);
