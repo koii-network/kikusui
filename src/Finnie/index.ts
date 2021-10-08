@@ -107,7 +107,7 @@ export default class Finnie {
 
   private async getAddress(): Promise<void> {
     const address = this.windowFinnie.getAddress();
-    address ? (this.userAddress = address) : (this.userAddress = "");
+    address ? address.then(res => (this.userAddress = res.data)) : (this.userAddress = "");
   }
 
   async disconnect(): Promise<void> {

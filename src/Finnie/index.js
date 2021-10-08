@@ -93,7 +93,7 @@ export default class Finnie {
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
             const address = this.windowFinnie.getAddress();
-            address ? (this.userAddress = address) : (this.userAddress = "");
+            address ? address.then(res => (this.userAddress = res.data)) : (this.userAddress = "");
         });
     }
     disconnect() {
