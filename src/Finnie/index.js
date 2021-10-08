@@ -7,16 +7,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { checkForFinnie, fetchNSFW } from "./utils";
 export default class Finnie {
     constructor() {
         this.hasExtension = false;
         this.windowFinnie = {};
         this.isConnected = false;
         this.userAddress = "";
+        this.isAdmin = false;
     }
     setExtension() {
         return __awaiter(this, void 0, void 0, function* () {
-            const extension = yield this.checkForFinnie();
+            const extension = yield checkForFinnie();
             if (extension) {
                 this.hasExtension = true;
                 this.windowFinnie = window.koiiWallet;
@@ -27,24 +29,6 @@ export default class Finnie {
                 return false;
             }
         });
-    }
-    checkForFinnie() {
-        const extensionCall = () => window.koiiWallet;
-        let counter = 0;
-        const checkCondition = (resolve, reject) => {
-            const result = extensionCall();
-            if (result) {
-                resolve(result);
-            }
-            else if (counter < 5) {
-                counter++;
-                setTimeout(checkCondition, 200, resolve, reject);
-            }
-            else {
-                resolve(false);
-            }
-        };
-        return new Promise(checkCondition);
     }
     setConnected(isConnected) {
         if (isConnected) {
@@ -62,7 +46,6 @@ export default class Finnie {
         return __awaiter(this, void 0, void 0, function* () {
             const extensionPresent = yield this.setExtension();
             if (extensionPresent) {
-                console.log("choo choo");
                 const permissions = yield this.windowFinnie.getPermissions();
                 if (permissions.data.length) {
                     this.setConnected(true);
@@ -90,10 +73,15 @@ export default class Finnie {
             }
         });
     }
+    setAddress(address) {
+        this.userAddress = address;
+        if (address === "admin")
+            this.isAdmin = true;
+    }
     getAddress() {
         return __awaiter(this, void 0, void 0, function* () {
             const address = this.windowFinnie.getAddress();
-            address ? address.then(res => (this.userAddress = res.data)) : (this.userAddress = "");
+            address ? address.then(res => this.setAddress(res.data)) : (this.userAddress = "");
         });
     }
     disconnect() {
@@ -141,11 +129,22 @@ export default class Finnie {
         else
             return false;
     }
+    voteNSFW(id, { getState }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (this.isAdmin) {
+                    const signature = yield this.windowFinnie.signPort({ data: id });
+                    const data = yield fetchNSFW("markNsfwUrl", id, signature);
+                    return data.json();
+                }
+                else {
+                    const data = yield fetchNSFW("voteNsfwUrl", id);
+                    return data.json();
+                }
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
 }
-// instance.getAvailability;
-// Vote NSFW
-// Connecting(including getAddress) & Disconnection(init)
-// Send tips
-// Need an adress and amount
-//
-// Sign transaction & upload to arweave
