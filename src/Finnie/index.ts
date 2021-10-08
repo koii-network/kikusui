@@ -6,8 +6,12 @@ declare global {
   }
 }
 
+interface ResponseObject {
+  data: any[];
+  status: string;
+}
 interface WindowFinnie {
-  getPermissions?(): Promise<any>;
+  getPermissions?(): Promise<any> | ResponseObject;
   connect?(): Promise<any>;
   sendKoii?(address: string, amount: number): Promise<any>;
   getAddress?(): Promise<any>;
@@ -21,7 +25,7 @@ export default class Finnie {
   hasExtension: boolean;
   windowFinnie: WindowFinnie;
   isConnected: boolean;
-  userAddress: string;
+  userAddress: string | Promise<any>;
   constructor() {
     this.hasExtension = false;
     this.windowFinnie = {};
@@ -35,7 +39,7 @@ export default class Finnie {
       this.hasExtension = true;
       this.windowFinnie = window.koiiWallet;
       return true;
-    } else if (!extension) {
+    } else {
       window.open(
         "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
         "_blank"
@@ -46,26 +50,23 @@ export default class Finnie {
 
   checkForFinnie(): Promise<any> {
     const extensionCall = () => window.koiiWallet;
-    const time = Number(new Date());
-
+    let counter = 0;
     const checkCondition = (resolve, reject) => {
       const result = extensionCall();
       if (result) {
         resolve(result);
-      } else if (time < time + 5000) {
+      } else if (counter < 5) {
+        counter++;
         setTimeout(checkCondition, 200, resolve, reject);
       } else {
-        reject(new Error("timed out for " + extensionCall));
+        resolve(false);
       }
     };
     return new Promise(checkCondition);
   }
 
   setConnected(isConnected) {
-    console.log(isConnected);
-
     if (isConnected) {
-      console.log("set connected happy");
       this.isConnected = true;
       this.getAddress();
     } else {
@@ -82,7 +83,7 @@ export default class Finnie {
       console.log("choo choo");
       const permissions = this.windowFinnie.getPermissions();
 
-      if (permissions) {
+      if (permissions.data.length) {
         this.setConnected(true);
       } else {
         this.setConnected(false);
@@ -95,9 +96,9 @@ export default class Finnie {
    */
   async connect(): Promise<boolean> {
     if (this.isConnected) {
-      const address = await this.getAddress();
+      this.getAddress();
       return true;
-    } else if (this.windowFinnie !== {}) {
+    } else {
       const isConnected = await this.windowFinnie.connect();
       isConnected ? this.setConnected(true) : this.setConnected(false);
       return false;
@@ -105,10 +106,8 @@ export default class Finnie {
   }
 
   private async getAddress(): Promise<void> {
-    if (this.windowFinnie !== {}) {
-      const address = await this.windowFinnie.getAddress();
-      this.userAddress = address.data;
-    }
+    const address = this.windowFinnie.getAddress();
+    address ? (this.userAddress = address) : (this.userAddress = "");
   }
 
   async disconnect(): Promise<void> {
