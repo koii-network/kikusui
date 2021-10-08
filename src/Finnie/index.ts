@@ -1,40 +1,22 @@
 export {};
-
-declare global {
-  interface Window {
-    koiiWallet?: WindowFinnie;
-  }
-}
-
-interface ResponseObject {
-  data: any[];
-  status: string;
-}
-interface WindowFinnie {
-  getPermissions?(): Promise<any> | ResponseObject;
-  connect?(): Promise<any>;
-  sendKoii?(address: string, amount: number): Promise<any>;
-  getAddress?(): Promise<any>;
-  disconnect?(): Promise<any>;
-  registerData?(): Promise<any>;
-  sign?(): Promise<any>;
-  signPort?(): any;
-}
+import { ResponseObject, WindowFinnie, checkForFinnie, fetchNSFW } from "./utils";
 
 export default class Finnie {
   hasExtension: boolean;
   windowFinnie: WindowFinnie;
   isConnected: boolean;
   userAddress: string | Promise<any>;
+  isAdmin: boolean;
   constructor() {
     this.hasExtension = false;
     this.windowFinnie = {};
     this.isConnected = false;
     this.userAddress = "";
+    this.isAdmin = false;
   }
 
   async setExtension(): Promise<boolean> {
-    const extension = await this.checkForFinnie();
+    const extension = await checkForFinnie();
     if (extension) {
       this.hasExtension = true;
       this.windowFinnie = window.koiiWallet;
@@ -46,23 +28,6 @@ export default class Finnie {
       );
       return false;
     }
-  }
-
-  checkForFinnie(): Promise<any> {
-    const extensionCall = () => window.koiiWallet;
-    let counter = 0;
-    const checkCondition = (resolve, reject) => {
-      const result = extensionCall();
-      if (result) {
-        resolve(result);
-      } else if (counter < 5) {
-        counter++;
-        setTimeout(checkCondition, 200, resolve, reject);
-      } else {
-        resolve(false);
-      }
-    };
-    return new Promise(checkCondition);
   }
 
   setConnected(isConnected) {
@@ -80,7 +45,6 @@ export default class Finnie {
     const extensionPresent = await this.setExtension();
 
     if (extensionPresent) {
-      console.log("choo choo");
       const permissions = await this.windowFinnie.getPermissions();
 
       if (permissions.data.length) {
@@ -105,9 +69,14 @@ export default class Finnie {
     }
   }
 
+  private setAddress(address) {
+    this.userAddress = address;
+    if (address === "admin") this.isAdmin = true;
+  }
+
   private async getAddress(): Promise<void> {
     const address = this.windowFinnie.getAddress();
-    address ? address.then(res => (this.userAddress = res.data)) : (this.userAddress = "");
+    address ? address.then(res => this.setAddress(res.data)) : (this.userAddress = "");
   }
 
   async disconnect(): Promise<void> {
@@ -145,15 +114,19 @@ export default class Finnie {
     if (this.hasExtension) return true;
     else return false;
   }
+
+  async voteNSFW(id, { getState }) {
+    try {
+      if (this.isAdmin) {
+        const signature = await this.windowFinnie.signPort({ data: id });
+        const data = await fetchNSFW("markNsfwUrl", id, signature);
+        return data.json();
+      } else {
+        const data = await fetchNSFW("voteNsfwUrl", id);
+        return data.json();
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
-
-// instance.getAvailability;
-
-// Vote NSFW
-
-// Connecting(including getAddress) & Disconnection(init)
-
-// Send tips
-// Need an adress and amount
-//
-// Sign transaction & upload to arweave
