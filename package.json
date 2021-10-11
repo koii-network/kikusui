@@ -1,6 +1,6 @@
 {
   "name": "@koii-network/kikusui",
-  "version": "1.3.9",
+  "version": "1.3.10",
   "description": "A wrapper utility for the finnie wallet.",
   "main": "./dist/index.js",
   "scripts": {
