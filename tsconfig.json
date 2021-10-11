@@ -5,7 +5,7 @@
     "lib": ["es2016", "DOM"],
     "outDir": "./dist"
   },
-  "include": ["**/*.ts"],
-  "exclude": ["./node_modules/", "./dist/"],
+  "include": ["**/*.ts", "./dist/"],
+  "exclude": ["./node_modules/"],
   "allowSyntheticDefaultImports": true
 }
