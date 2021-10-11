@@ -22,12 +22,16 @@ export default class Finnie {
       this.windowFinnie = window.koiiWallet;
       return true;
     } else {
-      window.open(
-        "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
-        "_blank"
-      );
       return false;
     }
+  }
+
+  // We added this helper function
+  installExt(): void {
+    window.open(
+      "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
+      "_blank"
+    );
   }
 
   setConnected(isConnected) {
@@ -41,7 +45,12 @@ export default class Finnie {
   /**
    * Checks to see if the extension is available
    */
-  async init(): Promise<void> {
+
+  // If no finnie is present => add ask to redirect to finnie download
+  // Create a method => get download link || download URL (make popup optional)
+  // isAdmin = private property
+
+  async init(): Promise<string | { error: string; extensionUrl: string }> {
     const extensionPresent = await this.setExtension();
 
     if (extensionPresent) {
@@ -49,23 +58,35 @@ export default class Finnie {
 
       if (permissions.data.length) {
         this.setConnected(true);
+        return "Successfully initialized, current user is already connected.";
       } else {
         this.setConnected(false);
+        return "Successfully initialized, no user found.";
       }
-    }
+    } else
+      return {
+        error: "Extension not found, unable to succesffully initialize.",
+        extensionUrl:
+          "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
+      };
   }
   /**
    * Checks to see if a wallet has already been connected, if so updates the wallet's address
    * if not, attempts to connect
    */
-  async connect(): Promise<boolean> {
+  async connect(): Promise<string> {
     if (this.isConnected) {
       this.getAddress();
-      return true;
+      return "Successfully connected the user. Use the userAddress property to access their address.";
     } else {
       const isConnected = await this.windowFinnie.connect();
-      isConnected ? this.setConnected(true) : this.setConnected(false);
-      return false;
+      if (isConnected && isConnected.status !== 401) {
+        this.setConnected(true);
+        return "Successfully connected the user. Use the userAddress property to access their address.";
+      } else {
+        this.setConnected(false);
+        return "Failed to connect: User rejected connection.";
+      }
     }
   }
 
@@ -79,6 +100,7 @@ export default class Finnie {
     address ? address.then(res => this.setAddress(res.data)) : (this.userAddress = "");
   }
 
+  // Revisit async/.then
   async disconnect(): Promise<void> {
     try {
       await this.windowFinnie.disconnect().then(res => {
@@ -115,7 +137,7 @@ export default class Finnie {
     else return false;
   }
 
-  async voteNSFW(id, { getState }) {
+  async voteNSFW(id: string | number): Promise<any> {
     try {
       if (this.isAdmin) {
         const signature = await this.windowFinnie.signPort({ data: id });
