@@ -2,9 +2,69 @@
   The wallet provider for Koii Network's Finnie
 
 ## Table of Contents
+* [Initialization](#initialization)
 * [Technologies](#technologies)
 * [Authors](#authors)
-* [Initialization](#initialization)
+
+## Initialization 
+Run `npm i @koii-network/kikusui` to install Kikusui package
+
+
+```js
+// Import the following: 
+
+import Finnie from "@koii-network/kikusui/src/index"
+
+// After importing, run the init method to check to see that the user has installed finnie
+
+const finnie = new Finnie();
+finnie.init();
+
+// If the finnie extension is detected you can check if a user 
+// has already been connected by checking if finnie isConnected(boolean)
+
+if (finnie.isConnected)
+
+// If finnie.isConnected === true, the user's address can be accessed via the userAddress property
+
+const address = finnie.userAddress;
+```
+
+
+#### Connect the User to Finnie
+ _You should only initiate user connection per user request (e.g. button click).
+  Do not initiate on page load._
+ 
+
+```js
+const isConnected = await finnie.connect();
+
+// If a user is successfully connected
+isConnected = "Successfully connected the user. Use the userAddress property to access their address.";
+// Refer to initialization instructions to access the address.
+
+// If a user rejects the connection
+isConnected = "Failed to connect: User rejected connection."
+```
+
+#### Send a Koii Tip
+
+```js
+// You can transfer Koii to another wallet with a target address(string) and an amount(integer) 
+finnie.sendTip(address, amount);
+```
+
+#### Disconnect
+
+```js
+const disconnected = finnie.disconnect();
+
+// If a user is successfully disconnected
+disconnected = "Succesfully disconnected."
+
+// If a user is already disconnected and tries to disconnect
+disconnected = "Not able to disconnect, no user is connected."
+```
 
 ## Technologies
 <p>
@@ -14,64 +74,19 @@
   <img src="https://img.shields.io/badge/github%20-%23121011.svg?&style=for-the-badge&logo=github&logoColor=white"/>
 </p>
 
-
 ## Authors
 <table>
     <tr>
-        <td> Ahmad Kayyali <a href="https://github.com/kayyali18">GH</td>
         <td> Jackson McGuire <a href="https://github.com/Jacksonmcguire">GH</td>
         <td> Ellie Azaveda <a href="https://github.com/EllieAzaveda">GH</td>
+        <td> Ahmad Kayyali <a href="https://github.com/kayyali18">GH</td>
     </tr>
     </tr>
-        <td><img src="https://avatars.githubusercontent.com/u/13953920?v=4" alt="A. Kayyali" width="125" height="auto" /></td>
         <td><img src="https://avatars.githubusercontent.com/u/72821268?v=4" alt="J. McGuire" width="125" height="auto" /></td>
         <td><img src="https://avatars.githubusercontent.com/u/76409536?v=4" alt="E. Azaveda" width="125" height="auto" /></td>
+        <td><img src="https://avatars.githubusercontent.com/u/13953920?v=4" alt="A. Kayyali" width="125" height="auto" /></td>
     </tr>
 </table>
-
-
-## Initialization 
-* Run `npm i @koii-network/kikusui` to install Kikusui package
-
-
-#### Check that User has Finnie 
-
-* Import the following: 
-```js
-import Finnie from "@koii-network/kikusui/src/index"
-
-// After importing, run the init method to check to see that the user has installed finnie
-
-const finnie = new Finnie();
-finnie.init();
-// If the finnie extension is detected you can tell if a user has already been connected by checking if finnie hasPermissions(boolean)
-finnie.hasPermissions
-```
-
-
-#### Connect the User to Finnie
-
-* You should only initiate user connection per user request (e.g. button click). Do not initiate on page load.
-
-* A successful connection to finnie will update Finnie's address property with current user's address
-
-```js
-finnie.connect();
-const address = finnie.userAddress;
-```
-
-#### Send a Koii Tip
-
-```js
-// You can transfer Koii to another wallet with an amount(integer) and a target address(string)
-finnie.sendTip(address, amount);
-```
-
-#### Disconnect
-
-```js
-finnie.disconnect();
-```
 
 
 
