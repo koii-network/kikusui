@@ -3,9 +3,10 @@
     "module": "esnext",
     "target": "es6",
     "lib": ["es2016", "DOM"],
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["node"]
   },
-  "include": ["**/*.ts", "./dist/"],
+  "include": ["**/*.ts", "./dist/", "./src/Finnie/"],
   "exclude": ["./node_modules/"],
   "allowSyntheticDefaultImports": true
 }

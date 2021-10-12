@@ -8,9 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // Waiting for these
-export const markNsfwUrl = "";
-export const voteNsfwUrl = "";
-export const adminAddress = "secrets.adminAddress";
+export const markNsfwUrl = "https://koi.rocks:8888/api/v1//markNSFWModerator";
+export const voteNsfwUrl = "https://koi.rocks:8888/api/v1//voteNSFWContent";
+export const adminAddress = process.env.ADMIN;
 export const checkForFinnie = () => {
     const extensionCall = () => window.koiiWallet;
     let counter = 0;
