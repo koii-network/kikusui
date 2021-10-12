@@ -75,10 +75,10 @@ export default class Finnie {
    * if not, attempts to connect
    */
   async connect(): Promise<string> {
-    if (this.isConnected) {
+    if (this.hasExtension && this.isConnected) {
       this.getAddress();
       return "Successfully connected the user. Use the userAddress property to access their address.";
-    } else {
+    } else if (this.hasExtension) {
       const isConnected = await this.windowFinnie.connect();
       if (isConnected && isConnected.status !== 401) {
         this.setConnected(true);
@@ -87,7 +87,7 @@ export default class Finnie {
         this.setConnected(false);
         return "Failed to connect: User rejected connection.";
       }
-    }
+    } else return "Failed to connect: Extension not present";
   }
 
   private setAddress(address) {
