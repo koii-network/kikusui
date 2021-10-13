@@ -26,7 +26,6 @@ export default class Finnie {
     }
   }
 
-  // We added this helper function
   installExt(): void {
     window.open(
       "https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj",
@@ -141,10 +140,10 @@ export default class Finnie {
     try {
       if (this.isAdmin) {
         const signature = await this.windowFinnie.signPort({ data: id });
-        const data = await fetchNSFW("markNsfwUrl", id, signature);
+        const data = await fetchNSFW("markNSFWModerator", id, signature);
         return data.json();
       } else {
-        const data = await fetchNSFW("voteNsfwUrl", id);
+        const data = await fetchNSFW("voteNSFWContent", id);
         return data.json();
       }
     } catch (error) {
