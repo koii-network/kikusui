@@ -3,9 +3,8 @@ declare global {
     koiiWallet?: WindowFinnie;
   }
 }
-// Waiting for these
-export const markNsfwUrl = "https://koi.rocks:8888/api/v1//markNSFWModerator";
-export const voteNsfwUrl = "https://koi.rocks:8888/api/v1//voteNSFWContent";
+
+export const baseURL = "https://koi.rocks:8888/api/v1/";
 export const adminAddress = process.env.ADMIN;
 
 export interface ResponseObject {
@@ -41,7 +40,7 @@ export const checkForFinnie = (): Promise<any> => {
 };
 
 // helper function for voteNSFW
-export const fetchNSFW = async (url, id, signature?): Promise<any> => {
+export const fetchNSFW = async (queryString, id, signature?): Promise<any> => {
   // Body with signature does not have stringify in example docs
   const body = signature ? JSON.stringify({ signature, NFTid: id }) : JSON.stringify({ NFTId: id });
   const postOptions = {
@@ -51,7 +50,7 @@ export const fetchNSFW = async (url, id, signature?): Promise<any> => {
     },
     body: body,
   };
-  return await fetch(url, postOptions);
+  return await fetch(baseURL + queryString, postOptions);
 };
 
 export {};

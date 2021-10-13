@@ -7,9 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// Waiting for these
-export const markNsfwUrl = "https://koi.rocks:8888/api/v1//markNSFWModerator";
-export const voteNsfwUrl = "https://koi.rocks:8888/api/v1//voteNSFWContent";
+export const baseURL = "https://koi.rocks:8888/api/v1/";
 export const adminAddress = process.env.ADMIN;
 export const checkForFinnie = () => {
     const extensionCall = () => window.koiiWallet;
@@ -30,7 +28,7 @@ export const checkForFinnie = () => {
     return new Promise(checkCondition);
 };
 // helper function for voteNSFW
-export const fetchNSFW = (url, id, signature) => __awaiter(void 0, void 0, void 0, function* () {
+export const fetchNSFW = (queryString, id, signature) => __awaiter(void 0, void 0, void 0, function* () {
     // Body with signature does not have stringify in example docs
     const body = signature ? JSON.stringify({ signature, NFTid: id }) : JSON.stringify({ NFTId: id });
     const postOptions = {
@@ -40,5 +38,5 @@ export const fetchNSFW = (url, id, signature) => __awaiter(void 0, void 0, void 
         },
         body: body,
     };
-    return yield fetch(url, postOptions);
+    return yield fetch(baseURL + queryString, postOptions);
 });

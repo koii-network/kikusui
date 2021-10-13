@@ -51,9 +51,17 @@ isConnected = "Failed to connect: User rejected connection."
 
 ```js
 // You can transfer Koii to another wallet with a target address(string) and an amount(integer) 
+
 finnie.sendTip(address, amount);
 ```
+#### Vote / Mark an NFT NSFW
+```js
+// If a user encounters an NFT they deem unsafe for work, they can vote for that NFT to be marked NSFW
 
+finnie.voteNSFW(id: string): {message: "Successfully voted for NSFW", status: 200} || {message: "NFTId is missing", status: 412}
+
+// Once an NFT receives 10 unique votes, it will be officially marked NSFW
+```
 #### Disconnect
 
 ```js
