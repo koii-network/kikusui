@@ -29,7 +29,6 @@ export default class Finnie {
             }
         });
     }
-    // We added this helper function
     installExt() {
         window.open("https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj", "_blank");
     }
@@ -156,11 +155,11 @@ export default class Finnie {
             try {
                 if (this.isAdmin) {
                     const signature = yield this.windowFinnie.signPort({ data: id });
-                    const data = yield fetchNSFW("markNsfwUrl", id, signature);
+                    const data = yield fetchNSFW("markNSFWModerator", id, signature);
                     return data.json();
                 }
                 else {
-                    const data = yield fetchNSFW("voteNsfwUrl", id);
+                    const data = yield fetchNSFW("voteNSFWContent", id);
                     return data.json();
                 }
             }
